@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:layout_centerInParent="true"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="32dp"
+    android:paddingHorizontal="16dp"
     tools:context=".MainActivity">
 
     <LinearLayout

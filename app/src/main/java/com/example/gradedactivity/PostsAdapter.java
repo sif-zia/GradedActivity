@@ -1,5 +1,7 @@
 package com.example.gradedactivity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,9 +17,11 @@ import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
     List<Post> posts;
+    Activity activity;
 
-    PostsAdapter(List<Post> posts) {
+    PostsAdapter(List<Post> posts, Activity activity) {
         this.posts = posts;
+        this.activity = activity;
     }
 
     @NonNull
@@ -49,11 +53,28 @@ public class PostsAdapter extends RecyclerView.Adapter<PostViewHolder> {
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, posts.size());
         });
+
+        holder.editButton.setOnClickListener(view -> {
+            final int EDIT_POST_REQUEST_CODE = 1;
+            Intent intent = new Intent(view.getContext(), EditPostActivity.class);
+            intent.putExtra("postId", posts.get(position).id);
+            intent.putExtra("title", posts.get(position).title);
+            intent.putExtra("body", posts.get(position).body);
+            intent.putExtra("userId", posts.get(position).userId);
+
+            activity.startActivityForResult(intent, EDIT_POST_REQUEST_CODE);
+        });
     }
 
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+        notifyDataSetChanged();
     }
 }
 

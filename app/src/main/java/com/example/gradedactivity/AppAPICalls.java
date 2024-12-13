@@ -3,6 +3,7 @@ package com.example.gradedactivity;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -103,5 +104,29 @@ public class AppAPICalls {
         });
 
         RequestQueueProvider.getRequestQueue(context).add(deletePostRequest);
+    }
+
+    public void updatePost(int postId, String updatedTitle, String updatedBody, int userId) {
+        StringRequest updatePostRequest = new StringRequest(Request.Method.PUT, url + "posts/" + postId, response -> {
+            Toast.makeText(context, "Post updated", Toast.LENGTH_SHORT).show();
+        }, error -> {
+            Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+        }) {
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                JSONObject postJSON = new JSONObject();
+                try {
+                    postJSON.put("id", postId);
+                    postJSON.put("userId", userId);
+                    postJSON.put("title", updatedTitle);
+                    postJSON.put("body", updatedBody);
+                } catch (JSONException e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                return postJSON.toString().getBytes();
+            }
+        };
+
+        RequestQueueProvider.getRequestQueue(context).add(updatePostRequest);
     }
 }
